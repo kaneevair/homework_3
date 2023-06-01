@@ -3,8 +3,10 @@ from config import jsonplaceholder_url
 
 
 class JSONPlaceHolderClient:
-    def request_place_holder(self, path):
+    @staticmethod
+    def request_place_holder(path, status_code) -> dict:
         response = requests.get(
             url=f'{jsonplaceholder_url}{path}',
         )
-        return response
+        assert response.status_code == status_code
+        return response.json()

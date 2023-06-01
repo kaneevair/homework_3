@@ -3,8 +3,10 @@ from config import openbrewerydb_url
 
 
 class OpenBreweryDBClient:
-    def request_brewery_db(self, path):
+    @staticmethod
+    def request_brewery_db(path, status_code) -> dict:
         response = requests.get(
             url=f'{openbrewerydb_url}{path}',
         )
-        return response
+        assert response.status_code == status_code
+        return response.json()
