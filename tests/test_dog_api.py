@@ -1,5 +1,8 @@
 import pytest
+import requests
 from hamcrest import assert_that, has_string
+
+from config import by_breed
 
 
 class Test200:
@@ -17,6 +20,22 @@ class Test200:
     def test_message_not_empty(self, dog_api):
         response = dog_api.request_dog_api(path="/random", status_code=200)
         assert response['message'] != ''
+
+    @pytest.mark.parametrize("breed", [
+        'afghan', 'basset',
+        'blood', 'english',
+        'ibizan', 'plott',
+        'walker'
+    ])
+    def test_message_by_sub_breed(self, breed):
+        response = requests.get(by_breed + "hound/" + breed + "/images")
+        assert response.json().get("message") != "Breed not found (sub breed does not exist)"
+        assert response.json().get("status") == "success"
+
+    def test_message_by_breed(self):
+        response = requests.get(by_breed + "hound/images")
+        assert response.json().get("message") != "Breed not found (sub breed does not exist)"
+        assert response.json().get("status") == "success"
 
 
 class Test40x:
